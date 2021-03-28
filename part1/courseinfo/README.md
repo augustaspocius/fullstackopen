@@ -4,7 +4,30 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Useful Links
 
-[https://egghead.io/courses/understand-javascript-s-this-keyword-in-depth]
+https://egghead.io/
+
+About Javascript 'this':
+
+https://egghead.io/courses/understand-javascript-s-this-keyword-in-depth
+
+About ES6:
+
+http://es6-features.org
+
+https://github.com/petsel/not-awesome-es6-classes
+
+https://medium.com/@rajaraodv/is-class-in-es6-the-new-bad-part-6c4e6fe1ee65
+
+Javascript:
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript
+
+https://github.com/getify/You-Dont-Know-JS
+
+https://javascript.info/
+
+
+
 
 ## Available Scripts
 
