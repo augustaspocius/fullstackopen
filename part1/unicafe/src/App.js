@@ -12,9 +12,9 @@ const HeaderStatistics = (props) => {
   )
 }
 
-const Feedback = (props) => {
+const Statistic = (props) => {
   return (
-    <div>{props.name} {props.feedback}</div>
+    <div>{props.text} {props.value}</div>
   )
 }
 
@@ -37,17 +37,15 @@ const Statistics = (props) => {
   }
   return (
     <div>      
-      <Feedback name={"good"} feedback={props.statistics.good}/>
-      <Feedback name={"neutral"} feedback={props.statistics.neutral}/>
-      <Feedback name={"bad"} feedback={props.statistics.bad}/>
-      <Feedback name={"all"} feedback={props.statistics.all}/>
-      <Feedback name={"average"} feedback={props.statistics.average()}/>
-      <Feedback name={"positive"} feedback={props.statistics.positive()}/>
+      <Statistic text={"good"} value={props.statistics.good}/>
+      <Statistic text={"neutral"} value={props.statistics.neutral}/>
+      <Statistic text={"bad"} value={props.statistics.bad}/>
+      <Statistic text={"all"} value={props.statistics.all}/>
+      <Statistic text={"average"} value={props.statistics.average()}/>
+      <Statistic text={"positive"} value={props.statistics.positive()}/>
     </div>
   )
 }
-
-
 
 
 const App = () => {
