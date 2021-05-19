@@ -25,21 +25,30 @@ const Button = (props) => (
 )
 
 
+const Statistics = (props) => {
+  return (
+    <div>      
+      <Feedback name={"good"} feedback={props.statistics.good}/>
+      <Feedback name={"neutral"} feedback={props.statistics.neutral}/>
+      <Feedback name={"bad"} feedback={props.statistics.bad}/>
+      <Feedback name={"all"} feedback={props.statistics.all}/>
+      <Feedback name={"average"} feedback={props.statistics.average()}/>
+      <Feedback name={"positive"} feedback={props.statistics.positive()}/>
+    </div>
+  )
+}
+
+
 
 
 const App = () => {
   // save clicks of each button to its own state
-  const unicafe = {
-    feedbackname: "give feedback",
-    statisticsname: "statistics"
-  }
-
-
+  
+  
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   const all = good + neutral + bad;
-
 
   const average = () => {
     return ((good * 1) + (neutral * 0) + (bad * -1)) / all
@@ -48,6 +57,20 @@ const App = () => {
   const positive = () => {
     return (((good + neutral)/ all) * 100).toString() + " %"
   }
+  
+  const unicafe = {
+    feedbackname: "give feedback",
+    statisticsname: "statistics",
+    statistics: {
+      good: good,
+      neutral: neutral,
+      bad: bad,
+      all: all,
+      average: average,
+      positive: positive
+    }
+  }
+
 
   return (
     <div>
@@ -56,13 +79,7 @@ const App = () => {
       <Button handleClick={() => setNeutral(neutral + 1)} text="neutral"/>
       <Button handleClick={() => setBad(bad + 1)} text="bad"/>
       <HeaderStatistics name={unicafe.statisticsname}/>
-      <Feedback name={"good"} feedback={good}/>
-      <Feedback name={"neutral"} feedback={neutral}/>
-      <Feedback name={"bad"} feedback={bad}/>
-      <Feedback name={"all"} feedback={all}/>
-      <Feedback name={"average"} feedback={average()}/>
-      <Feedback name={"positive"} feedback={positive()}/>
-
+      <Statistics statistics={unicafe.statistics}/>
     </div>
   )
 }
