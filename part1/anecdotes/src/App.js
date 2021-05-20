@@ -1,5 +1,22 @@
 import React, { useState } from 'react'
 
+const AnecdoteHeader = (props) => {
+  return (
+    <h1>{props.name}</h1>
+  )
+}
+
+const Anecdote = (props) => {
+  return (
+    <div>
+      <div>
+        {props.anecdote}
+      </div>
+      <div>has {props.votes} votes</div>
+    </div>
+  )
+}
+
 const Button = (props) => (
   <button onClick={props.handleClick}>
     {props.text}
@@ -44,17 +61,40 @@ const App = () => {
       
   }
 
+  const mostVotes = () => {
+    const votes = Object.values(copy);
+    const max = Math.max(...votes)
+
+    for (const [key, value] of Object.entries(copy)) {
+      if(copy[key] === max){
+        return anecdotes[key];
+      };
+    }
+  }
+
+  const mostCount = () => {
+    const votes = Object.values(copy);
+    const max = Math.max(...votes)
+
+    for (const [key, value] of Object.entries(copy)) {
+      if(copy[key] === max){
+        return copy[key];
+      };
+    }
+  }
+
   // increment the property 2 value by one
   // copy[2] += 1
 
   return (
+    
     <div>
-      <div>
-        {anecdotes[selected]}
-      </div>
-      <div>has {copy[selected]} votes</div>
+      <AnecdoteHeader name={"Anecdote of the day"}/>
+      <Anecdote anecdote={anecdotes[selected]} votes={copy[selected]}/>
       <Button handleClick={voteHandler} text="vote"/>
       <Button handleClick={generateRandomNumber} text="next anecdote"/>
+      <AnecdoteHeader name={"Anecdote with most votes"}/>
+      <Anecdote anecdote={mostVotes()} votes={mostCount()}/>
     </div>
   )
 }
