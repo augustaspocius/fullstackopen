@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, componentDidMount } from 'react'
 import axios from 'axios'
 
 
@@ -67,16 +67,60 @@ const Button = (props) => {
 }
 
 const CountryDetails = ({ country }) => {
+  console.log("render");
+  const [apiResponse, setForecast] = useState([])
+
+  useEffect(() => {
+    const fetchWeather = () =>{
+      console.log('handleForecasteffect');
+      const api_key = process.env.REACT_APP_API_KEY
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${country.capital}&appid=${api_key}&units=metric`
+      axios.get(url)
+      .then(response => {
+        setForecast(response.data);
+      }).catch(error => {
+        console.log(error);
+      });
+    }
+
+    fetchWeather(); 
+  }, [])
+
   return (
     <div>
       <h1>{country.name}</h1>
       <div>capital {country.capital}</div>
       <div>population {country.population}</div>
-      <h3>languages</h3>
+      <h3>Spoken Languages</h3>
       <ul>
         {country.languages.map(language => <li key={language.iso639_2}>{language.name}</li>)}
       </ul>
-      <img src={country.flag} width="400" height="300"></img>
+      <img src={country.flag} width="200" height="150"></img>
+      {apiResponse.length ? <CapitalForecast capital={country.capital} weather={apiResponse}/> : null}
+    </div>
+  )
+}
+
+const CapitalForecast = ({ capital, weather }) => {
+  // const api_key = process.env.REACT_APP_API_KEY
+  // const url = `https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`
+  // const [apiResponse, setForecast] = useState({})
+  // axios.get(url)
+  // .then(response => {
+  //   setForecast(response.data);
+  //   // console.log(`Current temperature in ${apiResponse.location.name} is ${apiResponse.current.temperature}℃`);
+  // }).catch(error => {
+  //   console.log(error);
+  // });
+
+
+
+
+  return (
+    <div>
+      <h3>Weather in {capital}</h3>
+      <div>temperature: {weather.main.temp}</div>
+      <div>wind: {weather.wind.speed}</div>
     </div>
   )
 }
@@ -91,7 +135,7 @@ function App() {
     setSearch(event.target.value);
 
     axios
-      .get('https://restcountries.eu/rest/v2/all')
+      .get('https://restcountries.com/v2/all')
       .then(response => {
         console.log('promise fulfilled')
         setCountries(response.data)
@@ -102,6 +146,7 @@ function App() {
   const countriesToShow = !searchCountries
     ? []
     : countries.filter(country => JSON.stringify(country.name).toLowerCase().includes(searchCountries))
+
 
   return (
     <div>
