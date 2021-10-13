@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import personsService from './services/persons'
 
 const Filter = ({ filter, filterhandler }) => {
   return (
@@ -43,8 +44,8 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect');
-    axios
-      .get('http://localhost:3003/persons')
+      personsService
+      .getAll()
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
@@ -68,8 +69,8 @@ const App = () => {
     });
 
     !contains ? 
-        axios
-        .post('http://localhost:3003/persons', newPerson)
+        personsService
+        .create(newPerson)
         .then(response => {
           setPersons(persons.concat(response.data))
         })
