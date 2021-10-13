@@ -44,7 +44,7 @@ const App = () => {
   useEffect(() => {
     console.log('effect');
     axios
-      .get('http://localhost:3001/persons')
+      .get('http://localhost:3003/persons')
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
@@ -60,12 +60,21 @@ const App = () => {
       number: newNumber
     };
 
+
+
     const contains = persons.some(person => {
-      return JSON.stringify(newPerson) === JSON.stringify(person);
+      return (JSON.stringify(newPerson.name) === JSON.stringify(person.name))
+            && (JSON.stringify(newPerson.number) === JSON.stringify(person.number));
     });
 
-    !contains ? setPersons(persons.concat(newPerson))
+    !contains ? 
+        axios
+        .post('http://localhost:3003/persons', newPerson)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+        })
       : alert(`${newName} ${newNumber} is already added to phonebook`);
+
 
     setNewName('');
     setNewNumber('');
