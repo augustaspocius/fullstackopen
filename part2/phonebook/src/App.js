@@ -26,12 +26,15 @@ const PersonForm = (props) => {
   )
 }
 
-const Persons = ({ persons }) => {
+const Persons = ({ deleteHandler, persons }) => {
+
   return (
-    persons.map(person => <div key={person.name}>
-      <span>{person.name}</span>
-      <span> {person.number}</span>
-    </div>)
+    persons.map(person =>
+      <div key={person.id}>
+        <span>{person.name}</span>
+        <span> {person.number} </span>
+        <button onClick={(e) => deleteHandler(person, e)}>delete</button>
+      </div>)
   )
 }
 
@@ -44,7 +47,7 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect');
-      personsService
+    personsService
       .getAll()
       .then(response => {
         console.log('promise fulfilled')
@@ -53,6 +56,7 @@ const App = () => {
   }, [])
 
   console.log('render', persons.length, 'persons');
+
   const addPerson = (event) => {
     console.log("addPerson");
     event.preventDefault();
@@ -65,11 +69,11 @@ const App = () => {
 
     const contains = persons.some(person => {
       return (JSON.stringify(newPerson.name) === JSON.stringify(person.name))
-            && (JSON.stringify(newPerson.number) === JSON.stringify(person.number));
+        && (JSON.stringify(newPerson.number) === JSON.stringify(person.number));
     });
 
-    !contains ? 
-        personsService
+    !contains ?
+      personsService
         .create(newPerson)
         .then(response => {
           setPersons(persons.concat(response.data))
@@ -80,6 +84,27 @@ const App = () => {
     setNewName('');
     setNewNumber('');
   }
+
+
+  const deletePerson = (person, event) => {
+    console.log("deletePerson");
+
+    if (window.confirm(`Do you really want to delete ${person.name}?`)) {
+      personsService
+        .delete(person.id)
+        .then(response => {
+          personsService
+          .getAll()
+          .then(response => {
+            console.log('promise fulfilled')
+            setPersons(response.data)
+          });
+        })
+
+    }
+  }
+
+
 
   const handleNameChange = (event) => {
     console.log(event.target.value)
@@ -113,7 +138,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={personsToShow} />
+      <Persons deleteHandler={deletePerson} persons={personsToShow} />
     </div>
   )
 }
