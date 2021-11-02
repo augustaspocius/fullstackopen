@@ -71,20 +71,44 @@ const App = () => {
       return (JSON.stringify(newPerson.name) === JSON.stringify(person.name))
         && (JSON.stringify(newPerson.number) === JSON.stringify(person.number));
     });
+    debugger;
+    const containsName = persons.some(person => {
+      return (JSON.stringify(newPerson.name) === JSON.stringify(person.name))
+        && (JSON.stringify(newPerson.number) != JSON.stringify(person.number));
+    });
 
-    !contains ?
-      personsService
-        .create(newPerson)
-        .then(response => {
-          setPersons(persons.concat(response.data))
-        })
-      : alert(`${newName} ${newNumber} is already added to phonebook`);
+    const personIDmatch = persons.filter(person => person.name === newPerson.name);
+
+    (!contains ?
+      (!containsName ?
+        personsService
+          .create(newPerson)
+          .then(response => {
+            setPersons(persons.concat(response.data))
+          })
+      : updatePerson(personIDmatch[0], newPerson))
+      : alert(`${newName} ${newNumber} is already added to phonebook`))
 
 
     setNewName('');
     setNewNumber('');
   }
 
+  const updatePerson = (person, newPerson) => {
+    if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+      personsService
+        .update(person.id, newPerson)
+        .then(response => {
+          personsService
+          .getAll()
+          .then(response => {
+            console.log('promise fulfilled')
+            setPersons(response.data)
+          });
+        })
+
+    }
+  }
 
   const deletePerson = (person, event) => {
     console.log("deletePerson");
