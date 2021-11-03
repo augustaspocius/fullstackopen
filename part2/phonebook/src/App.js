@@ -38,27 +38,36 @@ const Persons = ({ deleteHandler, persons }) => {
   )
 }
 
+const Notification = ({ message, classMessage }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className={classMessage}>
+      {message}
+    </div>
+  )
+}
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterPersons, setFilter] = useState('')
+  const [message, setMessage] = useState({ message: null, messageClass: "success" })
 
   useEffect(() => {
-    console.log('effect');
     personsService
       .getAll()
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
 
-  console.log('render', persons.length, 'persons');
 
   const addPerson = (event) => {
-    console.log("addPerson");
     event.preventDefault();
     const newPerson = {
       name: newName,
@@ -71,7 +80,6 @@ const App = () => {
       return (JSON.stringify(newPerson.name) === JSON.stringify(person.name))
         && (JSON.stringify(newPerson.number) === JSON.stringify(person.number));
     });
-    debugger;
     const containsName = persons.some(person => {
       return (JSON.stringify(newPerson.name) === JSON.stringify(person.name))
         && (JSON.stringify(newPerson.number) != JSON.stringify(person.number));
@@ -85,8 +93,14 @@ const App = () => {
           .create(newPerson)
           .then(response => {
             setPersons(persons.concat(response.data))
+            setMessage(
+              { message: `Added '${newPerson.name}'`, messageClass: "success" }
+            )
+            setTimeout(() => {
+              setMessage({ message: null, messageClass: "success" })
+            }, 5000)
           })
-      : updatePerson(personIDmatch[0], newPerson))
+        : updatePerson(personIDmatch[0], newPerson))
       : alert(`${newName} ${newNumber} is already added to phonebook`))
 
 
@@ -102,27 +116,43 @@ const App = () => {
           personsService
           .getAll()
           .then(response => {
-            console.log('promise fulfilled')
             setPersons(response.data)
-          });
+          })  
+          setMessage(
+            { message: `Changed '${newPerson.name}' number`, messageClass: "success" }
+          )
+          setTimeout(() => {
+            setMessage({ message: null, messageClass: "success" })
+          }, 5000)
+        })
+        .catch(response => {
+          setMessage(
+            { message: `'${newPerson.name}' is already removed`, messageClass: "error" }
+          )
+          setTimeout(() => {
+            setMessage({ message: null, messageClass: "success" })
+          }, 5000)
+        });
+      personsService
+        .getAll()
+        .then(response => {
+          setPersons(response.data)
         })
 
     }
   }
 
   const deletePerson = (person, event) => {
-    console.log("deletePerson");
 
     if (window.confirm(`Do you really want to delete ${person.name}?`)) {
       personsService
         .delete(person.id)
         .then(response => {
           personsService
-          .getAll()
-          .then(response => {
-            console.log('promise fulfilled')
-            setPersons(response.data)
-          });
+            .getAll()
+            .then(response => {
+              setPersons(response.data)
+            });
         })
 
     }
@@ -131,17 +161,14 @@ const App = () => {
 
 
   const handleNameChange = (event) => {
-    console.log(event.target.value)
     setNewName(event.target.value);
   }
 
   const handlePhoneChange = (event) => {
-    console.log(event.target.value)
     setNewNumber(event.target.value);
   }
 
   const handleFilterChange = (event) => {
-    console.log(event.target.value)
     setFilter(event.target.value);
   }
 
@@ -152,6 +179,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message.message} classMessage={message.messageClass} />
       <Filter filter={filterPersons} filterhandler={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm addPerson={addPerson}
